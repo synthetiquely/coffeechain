@@ -15,6 +15,6 @@ blockchain.getChain();
 # To create a new Transaction
 blockchain.addTransaction(sender, recipient, amount);
 
-#To mine a new block
+# To mine a new block
 blockchain.mine();
 ```
