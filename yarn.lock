@@ -2,9 +2,15 @@
 # yarn lockfile v1
 
 
-"@types/crypto-js@^3.1.38":
-  version "3.1.38"
-  resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-3.1.38.tgz#e1367f773edde2986ba9aebee3bf1cdf3e818a5d"
+"@types/dotenv@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/dotenv/-/dotenv-4.0.2.tgz#f2983f0afe9fd7f6eb8aef515a4d77f4cbaa0597"
+  dependencies:
+    "@types/node" "*"
+
+"@types/node@*":
+  version "9.4.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.5.tgz#d2a90c634208173d1b1a0a6ba9f1df3de62edcf5"
 
 abbrev@1:
   version "1.1.1"
@@ -398,10 +404,6 @@ cryptiles@2.x.x:
   dependencies:
     boom "2.x.x"
 
-crypto-js@^3.1.9-1:
-  version "3.1.9-1"
-  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.9-1.tgz#fda19e761fc077e01ffbfdc6e9fdfc59e8806cd8"
-
 crypto-random-string@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-1.0.0.tgz#a230f64f568310e1498009940790ec99545bca7e"
@@ -476,6 +478,10 @@ dot-prop@^4.1.0:
   resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-4.2.0.tgz#1f19e0c2e1aa0e32797c49799f2837ac6af69c57"
   dependencies:
     is-obj "^1.0.0"
+
+dotenv@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-5.0.0.tgz#0206eb5b336639bf377618a2a304ff00c6a1fddb"
 
 duplexer3@^0.1.4:
   version "0.1.4"

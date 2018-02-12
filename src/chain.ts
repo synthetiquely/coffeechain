@@ -1,28 +1,27 @@
 import { Block } from './block';
-import { calculateHash } from './helpers/calculateHash';
-import { validateIntegrity } from './helpers/validateIntegrity';
+import { Transaction } from './helpers/transaction';
+import * as crypto from 'crypto';
 
 export interface Chain {
   blockchain: Block[];
+  transactions: Transaction[];
 }
 
 export class Chain {
   constructor() {
-    this.blockchain = [this.getGenesisBlock()];
+    this.blockchain = [];
+    this.transactions = [];
+
+    // Create a genesis block
+    this.addBlock(100, '1');
   }
 
   /**
    * Returns the genesis block of the chain
-   * @return {Block} a first block in the blockchain, which is hard-coded
+   * @return {Block} a first block in the blockchain
    */
   getGenesisBlock(): Block {
-    return new Block(
-      0,
-      '0',
-      1465154705,
-      'i love coffee',
-      '816534932c2b7154836da6afc367695e6337db8a921823784c14378abed4f7d7',
-    );
+    return this.blockchain[0];
   }
 
   /**
@@ -34,36 +33,82 @@ export class Chain {
   }
 
   /**
-   * Adds new block to the existing chain
-   * @param {Block} newBlock
+   * Generates and returns a new block of the chain
+   * @param {number} proof
+   * @param {string} previousHash
+   * @return {Block}
    */
-  addBlock(newBlock: Block): void {
-    if (validateIntegrity(newBlock, this.getLatestBlock())) {
-      this.blockchain.push(newBlock);
-    }
+  addBlock(proof: number, previousHash: string): Block {
+    const index = this.blockchain.length + 1;
+    const timeStamp = new Date();
+    const block = new Block(
+      index,
+      timeStamp,
+      previousHash,
+      proof,
+      this.transactions,
+    );
+    this.transactions = [];
+    this.blockchain.push(block);
+    return block;
+  }
+  /**
+   * Store a new transaction
+   * @param {string} sender
+   * @param {string} recipient
+   * @param {number} amount
+   * @return {number} index of the block where the transaction will be added
+   */
+  addTransaction(sender: string, recipient: string, amount: number): number {
+    this.transactions.push({
+      sender,
+      recipient,
+      amount,
+    });
+    return this.getLatestBlock()['index'] + 1;
   }
 
   /**
-   * Generates and returns a new block of the chain
-   * @param {any} blockData the data piece to place in the block
-   * @return {Block} new encrypted block in the chain
+   * Generates a hash for the provided block to keep the integrity of the data
+   * @param {string} block
+   * @return {string}
    */
-  generateBlock(blockData: any): Block {
-    const previousBlock = this.getLatestBlock();
-    const nextIndex = previousBlock.index + 1;
-    const nextTimeStamp = new Date().getTime() / 1000;
-    const nextHash = calculateHash(
-      nextIndex,
-      previousBlock.hash,
-      nextTimeStamp,
-      blockData,
-    );
-    return new Block(
-      nextIndex,
-      previousBlock.hash,
-      nextTimeStamp,
-      blockData,
-      nextHash,
-    );
+  hashBlock(block: string): string {
+    const blockString = JSON.stringify(block);
+    return crypto
+      .createHmac(String(process.env.HASH_TYPE), String(process.env.SECRET_KEY))
+      .update(blockString)
+      .digest('hex');
+  }
+
+  /**
+   * Validates if a proof could become part of the chain by comparing their hashes
+   * @param  {number} lastProof the previous block of the chain
+   * @param  {number} proof block that needs to be validated
+   * @return {boolean} returns true if the proof is valid
+   */
+  private validateProof(lastProof: number, proof: number): boolean {
+    const hash = crypto
+      .createHmac(String(process.env.HASH_TYPE), String(process.env.SECRET_KEY))
+      .update(`${lastProof}${proof}`)
+      .digest('hex');
+    return hash.substr(0, 5) === process.env.RESOLUTION_HASH;
+  }
+
+  /**
+   * Cycles until the solution to the block is found
+   * @param  {number} lastProof
+   * @return {number}
+   */
+  proofOfWork(lastProof: number): number {
+    let proof = 0;
+    while (true) {
+      if (!this.validateProof(lastProof, proof)) {
+        proof++;
+      } else {
+        break;
+      }
+    }
+    return proof;
   }
 }
