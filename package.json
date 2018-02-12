@@ -1,5 +1,5 @@
 {
-  "name": "blockchain",
+  "name": "coffeechain",
   "version": "1.0.0",
   "description": "Implementation of blockchain in JS",
   "main": "index.ts",
@@ -9,18 +9,19 @@
   "scripts": {
     "start": "yarn build && yarn watch",
     "build": "yarn build-ts && yarn tslint",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"yarn watch-ts\" \"yarn serve\"",
+    "watch":
+      "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"yarn watch-ts\" \"yarn serve\"",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "serve": "nodemon ts-build/src/index.js",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
-    "crypto-js": "^3.1.9-1",
+    "dotenv": "^5.0.0",
     "typescript": "^2.7.1"
   },
   "devDependencies": {
-    "@types/crypto-js": "^3.1.38",
+    "@types/dotenv": "^4.0.2",
     "concurrently": "^3.5.1",
     "nodemon": "^1.14.12",
     "prettier": "^1.10.2",
